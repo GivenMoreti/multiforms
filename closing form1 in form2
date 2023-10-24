@@ -1,0 +1,117 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Prac11._2_Moreti_39141004
+{
+    public partial class Form2 : Form
+    {
+                
+        public Form2()
+        {          
+            InitializeComponent(); 
+          
+        }
+        private void okBtn_Click(object sender, EventArgs e)
+        {
+            this.Close();       //close form2
+
+            Form formOne = Application.OpenForms["Form1"];  //instance of Form
+            if (formOne != null)
+            {
+                formOne.Close(); // Close Form1 after clicking Ok
+            }
+        }
+    }
+}
+
+//form1
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Prac11._2_Moreti_39141004
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+       
+
+        string choice;
+        private void CheckAppliBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if(!string.IsNullOrEmpty(salaryTextBox.Text) || !string.IsNullOrEmpty(nameTextBox.Text)) {
+
+                    //variable declaration
+                    decimal salary;
+                    decimal.TryParse(salaryTextBox.Text, out salary);
+                                      
+                    //internet choice
+                    if(usbRadio.Checked )
+                    {
+                        choice = "usb dongle";
+                    }
+                    else if(wifiRadio.Checked )
+                    {
+                        choice = "LTE/WIFI";
+                    }else if(fibreRadio.Checked)
+                    {
+                        choice = "fibre";
+                    }
+                    else
+                    {
+                        MessageBox.Show("Did not make a choice");
+                    }
+                    
+                    if(salary <= 2500)
+                    {
+                        MessageBox.Show("The minimum salary for approval is 2500");
+                    }
+                    else
+                    {
+                        //send user data to listbox in form2
+                        Form2 approvalForm = new Form2();
+                        approvalForm.listBoxForm2.Items.Add($"Thank you for applying {nameTextBox.Text} Your {choice} application is approved");
+                        approvalForm.ShowDialog();
+
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Some field(s) empty");
+                }   
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Invalid format");  //catch invalid format error
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);        //catch other exceptions
+            }
+        }
+    }
+}
+
+
+
+
