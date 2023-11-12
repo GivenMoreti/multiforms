@@ -1,0 +1,142 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace mock_exam_2022
+{
+    public partial class Form : System.Windows.Forms.Form
+    {
+        public Form()
+        {
+            InitializeComponent();
+        }
+        
+        Random num = new Random();
+        private void Form_Load(object sender, EventArgs e)
+        {
+            //button hiding methods
+            //processBtn.Enabled = false;
+            // processBtn.Hide();
+            processBtn.Visible = false;
+            totalBtn.Hide();
+
+            StreamReader file;
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                file = File.OpenText(openFileDialog1.FileName);
+                string colors;
+                while (!file.EndOfStream)
+                {
+                    colors = file.ReadLine();
+                    colorsListBox.Items.Add(colors);
+
+                }
+            }
+            else
+            {
+
+                MessageBox.Show("cancel button clicked");
+            }
+            //openFileDialog1.ShowDialog();       //call the open file dialog
+        }
+
+        private void exitBtn_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void clearBtn_Click(object sender, EventArgs e)
+        {
+            colorsListBox.Items.Clear();
+            detailsListBox.Items.Clear();
+
+
+            surnameTB.Text = string.Empty;
+            stuNumTB.Text = string.Empty;
+            numPagesTB.Text = string.Empty;
+
+            conditionsCB.Checked = false;
+        }
+
+        private void conditionsCB_CheckedChanged(object sender, EventArgs e)
+        {
+            processBtn.Show();
+        }
+        
+        decimal fee;
+        private decimal calcPrintCharge(int numPages, string color)
+        {
+            
+
+            if (color == " Black")
+            {
+
+                fee = 0.3m;
+            }
+            else if (color == "Colour")
+            {
+                fee = 5.0m;
+
+            }
+            else if (color == "Colour Gloss")
+            {
+                fee = 7.5m;
+
+            }
+            else if (color == "Colour Canvas")
+            {
+                fee = 50.0m;
+            }
+            decimal printFee = fee * (decimal)numPages;
+
+            return printFee;
+
+        }
+
+        private string generateJobID(string surname,int numPages)
+        {
+            int max = 10;
+            int min = 1;
+           
+            num.Next(min,max);      //generate 1 - 10 random numbers.
+
+
+            string jobId = surname + num +numPages;
+            return jobId;
+
+        }
+
+        private void processBtn_Click(object sender, EventArgs e)
+        {
+            totalBtn.Visible = true;
+            string selectedColor = colorsListBox.SelectedItem.ToString();
+
+            int numberOfPages = int.Parse(numPagesTB.Text);
+
+            if(string.IsNullOrEmpty(surnameTB.Text) && (numberOfPages > 0))
+            {
+                string jobID = generateJobID(surnameTB.Text, int.Parse(numPagesTB.Text));
+
+                decimal printFee = calcPrintCharge(int.Parse(numPagesTB.Text), selectedColor);
+                detailsListBox.Items.Add("Job ID:" + jobID);
+                detailsListBox.Items.Add("Print Charge: " + printFee);
+            }
+            else
+            {
+                MessageBox.Show("please enter a surname");
+            }
+
+            
+            
+
+          
+        }
+    }
+}
